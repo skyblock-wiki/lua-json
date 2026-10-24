@@ -132,11 +132,33 @@ const luaDoubleQuote = lua.replace(/'/g, '"')
 equal(format(jsonDoubleQuote, { singleQuote: false }), luaDoubleQuote)
 deepEqual(parse(luaDoubleQuote), jsonDoubleQuote)
 
-const jsonMultiline = { "test": "1st line\n2nd line\n3rd line" }
+const luaNoEol = lua.replace(/\n/g, '')
+equal(format(json, { eol: '' }), luaNoEol)
+
+const luaDoubleEol = lua.replace(/\n/g, '\n\n')
+equal(format(json, { eol: '\n\n' }), luaDoubleEol)
+equal(format(json, { eol: '\n\n', spaces: null }), luaMinified)
+
+const luaIndentTab = lua.replace(/^( {2})+/gm, match => '\t'.repeat(match.length / 2))
+equal(format(json, { spaces: '\t' }), luaIndentTab)
+
+const luaIndentZeroSpace = lua.replace(/^ +/gm, '')
+equal(format(json, { spaces: 0 }), luaIndentZeroSpace)
+
+const luaIndentFourSpace = lua.replace(/^( {2})+/gm, match => '    '.repeat(match.length / 2))
+equal(format(json, { spaces: 4 }), luaIndentFourSpace)
+
+const luaLocal = lua.replace('return', 'local test =')
+deepEqual(parse(luaLocal), json)
+const luaLocalMinified = luaMinified.replace('return', 'local test=')
+deepEqual(parse(luaLocalMinified), json)
+
+const jsonMultiline = { "test": "1st line\n2nd line\n3rd line", "a b": "1st line" }
 const luaMultiline = `return {
   test = [[1st line
 2nd line
 3rd line]],
+  ['a b'] = [[1st line]],
 }`
 equal(format(jsonMultiline, { multilineString: true }), luaMultiline)
 deepEqual(parse(luaMultiline), jsonMultiline)

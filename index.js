@@ -57,14 +57,14 @@ const formatLuaKey = (string, singleQuote) =>
   valueKeys[string] ? `[${valueKeys[string]}]` : (string.match(/^[a-zA-Z_][a-zA-Z_0-9]*$/) && !isKeyword(string)) ? string : `[${formatLuaString(string, singleQuote, false)}]`
 
 /**
- * Encodes a JS data value as a Lua return statement with that value.
+ * Encodes a JS data value as a Lua return statement with Lua data value.
  * @param {any} value The JS data value to encode
  * @param {Object} options Formatting options
  * @param {string} options.eol In a pretty-printed result, the string to join each line with. Default newline character
  * @param {boolean} options.singleQuote Whether to encode string and irregular key values with single quotes. If false, double quotes are used. Default true
  * @param {boolean} options.multilineString Whether to encode string values with `[[ ]]`. Default false
  * @param {number | string | null} options.spaces Number of spaces, or a string, to prepend at each pretty-print level. If null, returns as minimized (disables pretty print). Default 2 spaces
- * @returns {string} Lua return statement with the resulting data value
+ * @returns {string} Resulting Lua return statement with Lua data value
  */
 const format = (value, options = { eol: '\n', singleQuote: true, multilineString: false, spaces: 2 }) => {
   const eol = (options.eol = isString(options.eol) ? options.eol : '\n')
@@ -90,7 +90,7 @@ const format = (value, options = { eol: '\n', singleQuote: true, multilineString
       if (isEmpty(value)) {
         return '{}'
       }
-      if (options.spaces) {
+      if (!isNull(options.spaces)) {
         const spaces = isNumber(options.spaces) ? repeat(' ', options.spaces * (i + 1)) : repeat(options.spaces, i + 1)
         const spacesEnd = isNumber(options.spaces) ? repeat(' ', options.spaces * i) : repeat(options.spaces, i)
         return `{${eol}${value.map(e => `${spaces}${rec(e, i + 1)},`).join(eol)}${eol}${spacesEnd}}`
@@ -103,7 +103,7 @@ const format = (value, options = { eol: '\n', singleQuote: true, multilineString
       if (isEmpty(value)) {
         return '{}'
       }
-      if (options.spaces) {
+      if (!isNull(options.spaces)) {
         const spaces = isNumber(options.spaces) ? repeat(' ', options.spaces * (i + 1)) : repeat(options.spaces, i + 1)
         const spacesEnd = isNumber(options.spaces) ? repeat(' ', options.spaces * i) : repeat(options.spaces, i)
         return `{${eol}${keys(value)
@@ -119,7 +119,7 @@ const format = (value, options = { eol: '\n', singleQuote: true, multilineString
     throw new Error(`can't format ${typeof value}`)
   }
 
-  return `return${options.spaces ? ' ' : ''}${rec(value)}`
+  return `return${isNull(options.spaces) ? '' : ' '}${rec(value)}`
 }
 
 /**
@@ -185,7 +185,7 @@ const luaAstToJson = ast => {
  * - `local <id> = <value>` (`<value>` is the Lua data value to be decoded)
  *
  * @param {string} value The Lua program to parse
- * @returns {any} The resulting JS data value
+ * @returns {any} Resulting JS data value
  */
 const parse = value => luaAstToJson(parseLua(value, { comments: false }))
 
