@@ -10,11 +10,13 @@
     "parse"
   ],
   "license": "MIT",
-  "author": "gakada (https://github.com/gakada)",
-  "contributors": [],
-  "homepage": "https://github.com/kcwiki/lua-json#readme",
-  "bugs": "https://github.com/kcwiki/lua-json/issues",
-  "repository": "kcwiki/lua-json",
+  "author": "Hypixel SkyBlock Wiki",
+  "contributors": [
+    "gakada (https://github.com/gakada)"
+  ],
+  "homepage": "https://github.com/skyblock-wiki/lua-json#readme",
+  "bugs": "https://github.com/skyblock-wiki/lua-json/issues",
+  "repository": "github:skyblock-wiki/lua-json",
   "main": "index.js",
   "files": [
     "index.js"
