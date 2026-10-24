@@ -1,4 +1,4 @@
-const { isNull, isBoolean, isNumber, isString, isArray, isObject, isEmpty, fromPairs, keys, map, repeat } = require('lodash')
+const { isNull, isUndefined, isBoolean, isNumber, isString, isArray, isObject, isEmpty, fromPairs, keys, map, repeat } = require('lodash')
 const { parse: parseLua } = require('luaparse')
 
 /**
@@ -76,10 +76,12 @@ const format = (value, options = { eol: '\n', singleQuote: true, multilineString
         const spaces = isNumber(options.spaces) ? repeat(' ', options.spaces * (i + 1)) : repeat(options.spaces, i + 1)
         const spacesEnd = isNumber(options.spaces) ? repeat(' ', options.spaces * i) : repeat(options.spaces, i)
         return `{${eol}${keys(value)
+          .filter(key => !isUndefined(value[key]))
           .map(key => `${spaces}${formatLuaKey(key, options.singleQuote, false)} = ${rec(value[key], i + 1)},`)
           .join(eol)}${eol}${spacesEnd}}`
       }
       return `{${keys(value)
+        .filter(key => !isUndefined(value[key]))
         .map(key => `${formatLuaKey(key, options.singleQuote, false)}=${rec(value[key], i + 1)},`)
         .join('')}}`
     }

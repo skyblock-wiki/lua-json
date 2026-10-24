@@ -140,3 +140,12 @@ const luaMultiline = `return {
 }`
 equal(format(jsonMultiline, { multilineString: true }), luaMultiline)
 deepEqual(parse(luaMultiline), jsonMultiline)
+
+const jsonUndefinedValue = {
+  _undefined: undefined,
+  _string: 'string',
+}
+const luaUndefinedValue = `return {
+  _string = 'string',
+}`
+equal(format(jsonUndefinedValue), luaUndefinedValue)
