@@ -135,6 +135,23 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@types/lodash@^4.17.27":
+  version "4.17.27"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.27.tgz#15fb73275b64dbfe49e2ae8376bb469b352a47a7"
+  integrity sha512-VenMRv/eKNrspX9v3H4dbmjsrnCOYdYBG3kxXKk3dG6X+urBGcj2Prww3xw1U5K4FV/mE4h5GbWd0szEKf+9ew==
+
+"@types/luaparse@^0.2.13":
+  version "0.2.13"
+  resolved "https://registry.yarnpkg.com/@types/luaparse/-/luaparse-0.2.13.tgz#2b80add520b8c853f82b33244bbccc80de5f41dd"
+  integrity sha512-nWs2m9b/zrMcAA2Rs+wTxdIsBkSYMo0+6ko8mpeqS5dhchU3hQN9kZGcSw96n497Vc7kGpDLtSicjdpaUrRAkw==
+
+"@types/node@^26.6.5":
+  version "26.6.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.6.5.tgz#cb35209e7767c503551b5fa42a48231c7441d979"
+  integrity sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==
+  dependencies:
+    undici-types "~8.9.0"
+
 acorn-jsx@^5.0.0:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
@@ -207,9 +224,9 @@ balanced-match@^1.0.0:
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
 brace-expansion@^1.1.7:
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
-  integrity sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.21.tgz#edf4fab5c64d051aea5a8def49aba1c7522279f3"
+  integrity sha512-9zeA+KLZNNzglF2TPKRQEDyx6Yby7daAkuy8MiPzpXPsYDWi/DRM8jmwUDxokQjYqBpv5DgPiwD4h4ZZSy1Ujw==
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
@@ -954,6 +971,11 @@ type-check@~0.3.2:
   integrity sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==
   dependencies:
     prelude-ls "~1.1.2"
+
+undici-types@~8.9.0:
+  version "8.9.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-8.9.0.tgz#e240d97c8b5d85e5347ce73d25865c7906c1ec9f"
+  integrity sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==
 
 uri-js@^4.2.2:
   version "4.4.1"
