@@ -3,7 +3,7 @@ const { isNull, isUndefined, isBoolean, isNumber, isString, isArray, isObject, i
 const { parse: parseLua } = require('luaparse')
 
 /**
- * @link https://github.com/fstirlitz/luaparse/blob/0f525b152516bc8afa34564de2423b039aa83bc1/luaparse.js#L1414
+ * @link https://github.com/fstirlitz/luaparse/blob/0f525b1/luaparse.js#L1414
  * @param {string} id
  * @returns {boolean}
  */
@@ -27,6 +27,23 @@ function isKeyword(id) {
 }
 
 /**
+ * @link https://stackoverflow.com/questions/20833295#33903830
+ * @param {string} str
+ * @param {RegExp} regex
+ * @return {string[]}
+ */
+function overlappingMatch(str, regex) {
+  const re = new RegExp(regex.source, 'g')
+  const result = []
+  let match
+  while ((match = re.exec(str))) {
+    result.push(match[0])
+    re.lastIndex = match.index + 1
+  }
+  return result
+}
+
+/**
  * @param {string} string
  * @param {boolean} singleQuote
  * @param {boolean} multilineString
@@ -35,8 +52,24 @@ function isKeyword(id) {
 const formatLuaString = (string, singleQuote, multilineString) => {
   string = string.replace(/\\/g, "\\\\")
   if (multilineString) {
-    if(string.includes("]]")) throw new SyntaxError("Multiline string can't include ']]'.") // TODO: provide more information about the error
-    return `[[${string}]]`
+    const openingMatches = overlappingMatch(string, /\[=*\[/)
+    const closingMatches = overlappingMatch(string, /\]=*\]/)
+    const endConflictMatch = string.match(/\]=*$/g)
+
+    /**
+     * @param {string[] | null} list
+     * @returns {number[]}
+     */
+    const countEquals = list => (list ?? []).map(str => (str.match(/=/g) ?? []).length)
+
+    const disallowedEquals = new Set([...countEquals(openingMatches), ...countEquals(closingMatches), ...countEquals(endConflictMatch)])
+    let smallestAllowed = 0
+    while (disallowedEquals.has(smallestAllowed)) {
+      smallestAllowed++
+    }
+
+    const equals = '='.repeat(smallestAllowed)
+    return `[${equals}[${string}]${equals}]`
   } else {
     string = string.replace(/\n/g, "\\n")
     return (singleQuote ? `'${string.replace(/'/g, "\\'")}'` : `"${string.replace(/"/g, '\\"')}"`)
