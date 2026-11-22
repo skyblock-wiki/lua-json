@@ -29,6 +29,8 @@ format(
   options?: {
     eol: string = '\n',
     singleQuote: boolean = true,
+    multilineString: boolean = false,
+    maxMultilineSize: number = 100,
     spaces: null | number | string = 2,
   }
 ): string

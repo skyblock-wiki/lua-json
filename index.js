@@ -27,53 +27,41 @@ function isKeyword(id) {
 }
 
 /**
- * @link https://stackoverflow.com/questions/20833295#33903830
- * @param {string} str
- * @param {RegExp} regex
- * @return {string[]}
- */
-function overlappingMatch(str, regex) {
-  const re = new RegExp(regex.source, 'g')
-  const result = []
-  let match
-  while ((match = re.exec(str))) {
-    result.push(match[0])
-    re.lastIndex = match.index + 1
-  }
-  return result
-}
-
-/**
  * @param {string} string
  * @param {boolean} singleQuote
  * @param {boolean} multilineString
+ * @param {number} maxMultilineSize
  * @returns {string}
  */
-const formatLuaString = (string, singleQuote, multilineString) => {
+const formatLuaString = (string, singleQuote, multilineString, maxMultilineSize = 100) => {
   string = string.replace(/\\/g, "\\\\")
   if (multilineString) {
-    const openingMatches = overlappingMatch(string, /\[=*\[/)
-    const closingMatches = overlappingMatch(string, /\]=*\]/)
-    const endConflictMatch = string.match(/\]=*$/g)
-
     /**
-     * @param {string[] | null} list
-     * @returns {number[]}
+     * @param {number} size
+     * @returns {boolean}
      */
-    const countEquals = list => (list ?? []).map(str => (str.match(/=/g) ?? []).length)
+    const isSizeValid = size =>
+      isNull(string.match(`\\[${'='.repeat(size)}\\[`)) &&
+      isNull(string.match(`\\]${'='.repeat(size)}\\]`)) &&
+      isNull(string.match(`\\]${'='.repeat(size)}$`))
 
-    const disallowedEquals = new Set([...countEquals(openingMatches), ...countEquals(closingMatches), ...countEquals(endConflictMatch)])
-    let smallestAllowed = 0
-    while (disallowedEquals.has(smallestAllowed)) {
-      smallestAllowed++
+    let smallestValidSize
+    for (let i = 0; i <= maxMultilineSize; i++) {
+      if (isSizeValid(i)) {
+        smallestValidSize = i
+        break
+      }
     }
 
-    const equals = '='.repeat(smallestAllowed)
-    return `[${equals}[${string}]${equals}]`
-  } else {
-    string = string.replace(/\n/g, "\\n")
-    return (singleQuote ? `'${string.replace(/'/g, "\\'")}'` : `"${string.replace(/"/g, '\\"')}"`)
+    if (isNumber(smallestValidSize)) {
+      const equals = '='.repeat(smallestValidSize)
+      return `[${equals}[${string}]${equals}]`
+    }
+    // else: fall back to single-line string
   }
+
+  string = string.replace(/\n/g, "\\n")
+  return (singleQuote ? `'${string.replace(/'/g, "\\'")}'` : `"${string.replace(/"/g, '\\"')}"`)
 }
 
 /**
@@ -96,6 +84,7 @@ const formatLuaKey = (string, singleQuote) =>
  * @param {string} options.eol In a pretty-printed result, the string to join each line with. Default newline character
  * @param {boolean} options.singleQuote Whether to encode string and irregular key values with single quotes. If false, double quotes are used. Default true
  * @param {boolean} options.multilineString Whether to encode string values with `[[ ]]`. Default false
+ * @param {number} [options.maxMultilineSize] The maximum number of equal signs between the square brackets that can be added to accomodate the string before falling back to single-line string. Default 100
  * @param {number | string | null} options.spaces Number of spaces, or a string, to prepend at each pretty-print level. If null, returns as minimized (disables pretty print). Default 2 spaces
  * @returns {string} Resulting Lua return statement with Lua data value
  */
@@ -117,7 +106,7 @@ const format = (value, options = { eol: '\n', singleQuote: true, multilineString
       return value.toString()
     }
     if (isString(value)) {
-      return formatLuaString(value, options.singleQuote, options.multilineString)
+      return formatLuaString(value, options.singleQuote, options.multilineString, options.maxMultilineSize)
     }
     if (isArray(value)) {
       if (isEmpty(value)) {
