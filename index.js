@@ -3,7 +3,7 @@ const { isNull, isUndefined, isBoolean, isNumber, isString, isArray, isObject, i
 const { parse: parseLua } = require('luaparse')
 
 /**
- * @link https://github.com/fstirlitz/luaparse/blob/0f525b152516bc8afa34564de2423b039aa83bc1/luaparse.js#L1414
+ * @link https://github.com/fstirlitz/luaparse/blob/0f525b1/luaparse.js#L1414
  * @param {string} id
  * @returns {boolean}
  */
@@ -35,12 +35,14 @@ function isKeyword(id) {
 const formatLuaString = (string, singleQuote, multilineString) => {
   string = string.replace(/\\/g, "\\\\")
   if (multilineString) {
-    if(string.includes("]]")) throw new SyntaxError("Multiline string can't include ']]'.") // TODO: provide more information about the error
-    return `[[${string}]]`
-  } else {
-    string = string.replace(/\n/g, "\\n")
-    return (singleQuote ? `'${string.replace(/'/g, "\\'")}'` : `"${string.replace(/"/g, '\\"')}"`)
+    if (!string.includes('[[') && !string.includes(']]') && !string.endsWith(']')) {
+      return `[[${string}]]`
+    }
+    // else: fall back to single-line string
   }
+
+  string = string.replace(/\n/g, "\\n")
+  return (singleQuote ? `'${string.replace(/'/g, "\\'")}'` : `"${string.replace(/"/g, '\\"')}"`)
 }
 
 /**

@@ -153,12 +153,21 @@ deepEqual(parse(luaLocal), json)
 const luaLocalMinified = luaMinified.replace('return', 'local test=')
 deepEqual(parse(luaLocalMinified), json)
 
-const jsonMultiline = { "test": "1st line\n2nd line\n3rd line", "a b": "1st line" }
+const jsonMultiline = {
+  test: '1st line\n2nd line\n3rd line',
+  'a b': '1st line',
+  delimiter1: '[[',
+  delimiter2: ']]',
+  'end conflict': ']',
+}
 const luaMultiline = `return {
   test = [[1st line
 2nd line
 3rd line]],
   ['a b'] = [[1st line]],
+  delimiter1: '[[',
+  delimiter2: ']]',
+  end conflict = ']',
 }`
 equal(format(jsonMultiline, { multilineString: true }), luaMultiline)
 deepEqual(parse(luaMultiline), jsonMultiline)

@@ -29,6 +29,7 @@ format(
   options?: {
     eol: string = '\n',
     singleQuote: boolean = true,
+    multilineString: boolean = false,
     spaces: null | number | string = 2,
   }
 ): string
